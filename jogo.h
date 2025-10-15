@@ -1,112 +1,94 @@
 /*
  * Cabeçalho para a Linguagem de Script de Jogo
- * Define as estruturas da AST, tabela de símbolos e declarações de funções.
+ * Define as estruturas da AST, tabela de símbolos e funções globais.
  */
 
-// Estrutura para a tabela de símbolos
+// Estrutura para um símbolo (variável ou função)
 struct symbol {
-  char *name;
-  double value;
-  struct ast *func;
-  struct symlist *syms;
+    char *name;
+    double value;
 };
 
-// Tamanho fixo da tabela hash
+// Tamanho da tabela de hash para os símbolos
 #define NHASH 9997
+
+// Tabela de símbolos externa
 extern struct symbol symtab[NHASH];
 
-// Lista de símbolos, para argumentos de funções
-struct symlist {
-  struct symbol *sym;
-  struct symlist *next;
+// Enum para funções pré-definidas (built-in functions)
+enum bifs {
+    B_sqrt = 1,
+    B_exp,
+    B_log,
+    B_print
 };
 
-// Tipos de nós da Árvore Sintática Abstrata (AST)
-/*
- * + - * / |
- * 0-7: operadores de comparação
- * M: menos unário
- * L: lista de statements
- * I: VERIFICA (IF)
- * W: REPETE (WHILE)
- * F: CONTAGEM (FOR)
- * N: número
- * =: atribuição
- * S: referência a símbolo
- * C: chamada de função
- */
-enum bifs { B_sqrt = 1, B_exp, B_log, B_print }; // Funções pré-definidas
-
-// Estrutura de um nó da AST
+// Estrutura base da Árvore Sintática Abstrata (AST)
 struct ast {
-  int nodetype;
-  struct ast *l;
-  struct ast *r;
+    int nodetype;
+    struct ast *l;
+    struct ast *r;
 };
 
-// Estrutura para funções pré-definidas e chamadas
+// Chamada de função
 struct fncall {
-  int nodetype; // 'C' para chamada
-  struct ast *l;
-  enum bifs functype;
+    int nodetype;       // Tipo 'C'
+    struct ast *l;
+    enum bifs functype;
 };
 
-// Estrutura para controle de fluxo (IF, WHILE)
+// Estrutura para fluxo de controle (IF, WHILE)
 struct flow {
-  int nodetype; // 'I' ou 'W'
-  struct ast *cond;
-  struct ast *tl; // then list
-  struct ast *el; // else list
+    int nodetype;       // Tipo 'I' ou 'W'
+    struct ast *cond;
+    struct ast *tl;     // Then-list ou Do-list
+    struct ast *el;     // Else-list (opcional)
 };
 
-// Estrutura para o comando FOR
+// Estrutura para o laço FOR
 struct forloop {
-    int nodetype; // 'F'
+    int nodetype;       // Tipo 'F'
     struct ast *init;
     struct ast *cond;
     struct ast *inc;
     struct ast *stmts;
 };
 
-// Estrutura para números
+// Valor numérico
 struct numval {
-  int nodetype; // 'N'
-  double number;
+    int nodetype;       // Tipo 'N'
+    double number;
 };
 
-// Estrutura para referência a símbolos
+// Referência a um símbolo
 struct symref {
-  int nodetype; // 'S'
-  struct symbol *s;
+    int nodetype;       // Tipo 'S'
+    struct symbol *s;
 };
 
-// Estrutura para atribuição
+// Atribuição a um símbolo
 struct symasgn {
-  int nodetype; // '='
-  struct symbol *s;
-  struct ast *v;
+    int nodetype;       // Tipo '='
+    struct symbol *s;
+    struct ast *v;
 };
 
-// Funções para construir a AST
+/* Protótipos das funções de construção da AST */
 struct ast *newast(int nodetype, struct ast *l, struct ast *r);
 struct ast *newcmp(int cmptype, struct ast *l, struct ast *r);
 struct ast *newfunc(int functype, struct ast *l);
-struct ast *newcall(struct symbol *s, struct ast *l);
 struct ast *newref(struct symbol *s);
 struct ast *newasgn(struct symbol *s, struct ast *v);
 struct ast *newnum(double d);
 struct ast *newflow(int nodetype, struct ast *cond, struct ast *tl, struct ast *el);
 struct ast *newfor(struct ast *init, struct ast *cond, struct ast *inc, struct ast *stmts);
 
-// Funções da tabela de símbolos
+/* Protótipos de outras funções */
 struct symbol *lookup(char*);
-struct symlist *newsymlist(struct symbol *sym, struct symlist *next);
-void symlistfree(struct symlist *sl);
-
-// Função principal de avaliação
 double eval(struct ast *);
 void treefree(struct ast *);
 
-// Funções do lexer
+// Função do analisador léxico e variável de linha
 extern int yylineno;
+int yylex();
 void yyerror(const char *s, ...);

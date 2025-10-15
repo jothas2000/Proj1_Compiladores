@@ -1,34 +1,67 @@
-// Teste 1: Atribuição simples e print
-vida = 100
-mana = 50
-MOSTRAR_STATUS(vida)
+// -----------------------------------------------------------
+// ARQUIVO DE TESTE FINAL - COM PONTO E VÍRGULA NOS BLOCOS
+// -----------------------------------------------------------
 
-// Teste 2: Estrutura VERIFICA (IF) e operadores de comparação
-dano = 75
-VERIFICA dano > vida EXECUTA { MOSTRAR_STATUS(0) } ALTERNATIVA { MOSTRAR_STATUS(vida - dano) }
+// Teste 1: Atribuição de variáveis e uso de MOSTRAR_STATUS
+MOSTRAR_STATUS(1111)
+vida_jogador = 100
+mana_jogador = 80
+MOSTRAR_STATUS(vida_jogador)
+MOSTRAR_STATUS(mana_jogador)
 
-// Teste 3: Operadores Lógicos E/OU
-inimigo_perto = 1 // 1 para verdadeiro
-tem_mana = 0      // 0 para falso
-VERIFICA inimigo_perto E tem_mana EXECUTA { MOSTRAR_STATUS(1) } // Não deve executar
-VERIFICA inimigo_perto OU tem_mana EXECUTA { MOSTRAR_STATUS(1) } // Deve executar
+// Teste 2: Expressões Aritméticas
+MOSTRAR_STATUS(2222)
+dano_base = 20
+bonus_ataque = 15
+dano_total = dano_base + bonus_ataque
+vida_jogador = vida_jogador - dano_total
+MOSTRAR_STATUS(vida_jogador)
 
-// Teste 4: Comando CONTAGEM (FOR) para simular turnos
-turnos = 0
-CONTAGEM (i = 1; i <= 5; i = i + 1) {
-    turnos = turnos + 1;
-    MOSTRAR_STATUS(turnos)
+// Teste 3: Condicional VERIFICA (IF/ELSE)
+MOSTRAR_STATUS(3333)
+custo_magia = 80
+VERIFICA mana_jogador == custo_magia EXECUTA {
+    MOSTRAR_STATUS(1)
 }
 
-// Teste 5: Comando REPETE (WHILE)
-energia = 3
-REPETE energia > 0 {
-    MOSTRAR_STATUS(energia);
-    energia = energia - 1
+VERIFICA vida_jogador < 50 EXECUTA {
+    MOSTRAR_STATUS(999) // Não deve executar
+} ALTERNATIVA {
+    MOSTRAR_STATUS(2)
 }
 
-// Teste 6: Erro de Sintaxe (falta um parêntese)
-CONTAGEM (i = 0; i < 5; i = i + 1 { MOSTRAR_STATUS(i) }
+// Teste 4: Laço REPETE (WHILE) com múltiplos comandos
+MOSTRAR_STATUS(4444)
+REPETE vida_jogador < 90 {
+    vida_jogador = vida_jogador + 10;
+    MOSTRAR_STATUS(vida_jogador)
+}
 
-// Teste 7: Erro de Sintaxe (operador inválido)
-vida ++
+// Teste 5: Laço CONTAGEM (FOR) com múltiplos comandos
+MOSTRAR_STATUS(5555)
+dano_veneno = 7
+CONTAGEM (turno = 1; turno <= 4; turno = turno + 1) {
+    vida_jogador = vida_jogador - dano_veneno; // <-- PONTO E VÍRGULA ADICIONADO
+    MOSTRAR_STATUS(vida_jogador)
+}
+
+// Teste 8: Simulação de Batalha com múltiplos comandos no laço
+MOSTRAR_STATUS(8888)
+vida_chefe = 40
+dano_jogador = 15
+turno_batalha = 0
+REPETE vida_chefe > 0 {
+    turno_batalha = turno_batalha + 1; // <-- PONTO E VÍRGULA ADICIONADO
+    MOSTRAR_STATUS(turno_batalha);     // <-- PONTO E VÍRGULA ADICIONADO
+    vida_chefe = vida_chefe - dano_jogador; // <-- PONTO E VÍRGULA ADICIONADO
+    MOSTRAR_STATUS(vida_chefe)
+}
+
+
+// Teste 9: Testes de Erro de Sintaxe (esperados)
+MOSTRAR_STATUS(9999)
+// Palavra-chave inválida - o parser deve reclamar aqui
+SE vida_jogador > 0 ENTAO { MOSTRAR_STATUS(1) }
+
+// Operador inválido - o lexer deve reclamar aqui
+vida_jogador ++
