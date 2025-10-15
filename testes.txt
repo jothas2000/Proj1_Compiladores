@@ -1,0 +1,34 @@
+// Teste 1: Atribuição simples e print
+vida = 100
+mana = 50
+MOSTRAR_STATUS(vida)
+
+// Teste 2: Estrutura VERIFICA (IF) e operadores de comparação
+dano = 75
+VERIFICA dano > vida EXECUTA { MOSTRAR_STATUS(0) } ALTERNATIVA { MOSTRAR_STATUS(vida - dano) }
+
+// Teste 3: Operadores Lógicos E/OU
+inimigo_perto = 1 // 1 para verdadeiro
+tem_mana = 0      // 0 para falso
+VERIFICA inimigo_perto E tem_mana EXECUTA { MOSTRAR_STATUS(1) } // Não deve executar
+VERIFICA inimigo_perto OU tem_mana EXECUTA { MOSTRAR_STATUS(1) } // Deve executar
+
+// Teste 4: Comando CONTAGEM (FOR) para simular turnos
+turnos = 0
+CONTAGEM (i = 1; i <= 5; i = i + 1) {
+    turnos = turnos + 1;
+    MOSTRAR_STATUS(turnos)
+}
+
+// Teste 5: Comando REPETE (WHILE)
+energia = 3
+REPETE energia > 0 {
+    MOSTRAR_STATUS(energia);
+    energia = energia - 1
+}
+
+// Teste 6: Erro de Sintaxe (falta um parêntese)
+CONTAGEM (i = 0; i < 5; i = i + 1 { MOSTRAR_STATUS(i) }
+
+// Teste 7: Erro de Sintaxe (operador inválido)
+vida ++
